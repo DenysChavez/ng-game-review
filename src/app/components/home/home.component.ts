@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Params } from '@angular/router';
+import { ApiResponse, Game } from 'src/app/models';
+import { HttpService } from 'src/app/services/http.service';
 
 @Component({
   selector: 'app-home',
@@ -7,13 +10,29 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit{
 
-  public sort: any;
+  public sort: string | any;
+  public games: Array<Game> | any;
 
-  constructor() { }
+  constructor(
+    private httpService: HttpService,
+    private activatedRoute: ActivatedRoute
+  ) { }
   
-  ngOnInit(): void { }
+  ngOnInit(): void { 
+    this.activatedRoute.params.subscribe((params: Params) => {
+      if (params['game-search']) {
+        this.searchGames('metacrit', params['game-search']);
+      } else {
+        this.searchGames('metacrit');
+      }
+    })
+  }
   
-  searchGames(sort: string) {
-
+  searchGames(sort: string, search?: string) {
+    this.httpService.getGameList(sort, search)
+      .subscribe((gameList: ApiResponse<Game>) => {
+        this.games = gameList.results;
+        console.log(this.games)
+      });
   }
 }
