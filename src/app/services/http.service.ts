@@ -14,40 +14,33 @@ export class HttpService {
 
   getGameList(
     ordering: string,
-    search?: string
-  ): Observable<ApiResponse<Game>> {
+    search?: string)
+    : Observable<ApiResponse<Game>> {
+    
     let params = new HttpParams().set('ordering', ordering);
 
     if (search) {
-      params = new HttpParams().set('ordering', ordering).set('search', search);
-    }
+      params = new HttpParams().set('search', search).set('ordering', ordering);
+    } 
 
-    return this.http.get<ApiResponse<Game>>(`${env.BASE_URL}/games`, {
-      params: params,
-    });
+    return this.http.get<ApiResponse<Game>>(`https://api.rawg.io/api/games?key=aac98732cf3445d48ccdf07a246b3a98`, { params: params });
+    
   }
 
+
   getGameDetailsFromHttp(id: string): Observable<Game> {
-    const gameInfoRequest = this.http.get(`${env.BASE_URL}/games/${id}`);
-    const gameTrailersRequest = this.http.get(
-      `${env.BASE_URL}/games/${id}/movies`
-    );
-    const gameScreenshotsRequest = this.http.get(
-      `${env.BASE_URL}/games/${id}/screenshots`
-    );
+
+    const gameInfoRequest = this.http.get(`https://api.rawg.io/api/games/${id}?key=aac98732cf3445d48ccdf07a246b3a98`);
+
+    const gameTrailersRequest = this.http.get(`https://api.rawg.io/api/games/${id}/movies?key=aac98732cf3445d48ccdf07a246b3a98`);
 
     return forkJoin({
-      gameInfoRequest,
-      gameScreenshotsRequest,
-      gameTrailersRequest,
-    }).pipe(
-      map((resp: any) => {
-        return {
-          ...resp['gameInfoRequest'],
-          screenshots: resp['gameScreenshotsRequest']?.results,
-          trailers: resp['gameTrailersRequest']?.results,
-        };
-      })
-    );
+      gameInfoRequest, gameTrailersRequest
+    }).pipe(map((resp: any) => {
+      return {
+        ...resp['gameInfoRequest'],
+        trailers: resp['gameTrailersRequest'].results
+      }
+    }))
   }
 }

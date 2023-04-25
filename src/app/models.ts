@@ -18,6 +18,7 @@ export interface ApiResponse<T> {
     results: Array<T>
 }
 
+
 interface Genre {
     name: string;
 }

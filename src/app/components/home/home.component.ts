@@ -26,19 +26,17 @@ export class HomeComponent implements OnInit{
   ngOnInit(): void { 
     this.routeSub = this.activatedRoute.params.subscribe((params: Params) => {
       if (params['game-search']) {
-        this.searchGames('metacrit', params['game-search']);
+        this.searchGames(this.sort, params['game-search']);
       } else {
-        this.searchGames('metacrit');
+        this.searchGames(this.sort);
       }
     });
   }
   
   searchGames(sort: string, search?: string) {
-    this.gameSub = this.httpService.getGameList(sort, search)
-      .subscribe((gameList: ApiResponse<Game>) => {
-        this.games = gameList.results;
-        // console.log(this.games)
-      });
+    this.gameSub = this.httpService.getGameList(sort, search).subscribe((gameList: ApiResponse<Game>) => {
+      this.games = gameList.results;
+    });
   }
 
   openGameDetails(id: string) {
