@@ -1,5 +1,6 @@
 export const environment = {
+
   production: false,
-  BASE_URL: 'https://api.rawg.io/api/games?'
+  API_KEY: "aac98732cf3445d48ccdf07a246b3a98"
   };
   

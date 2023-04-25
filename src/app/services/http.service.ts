@@ -16,23 +16,23 @@ export class HttpService {
     ordering: string,
     search?: string)
     : Observable<ApiResponse<Game>> {
-    
+
     let params = new HttpParams().set('ordering', ordering);
 
     if (search) {
       params = new HttpParams().set('search', search).set('ordering', ordering);
     } 
 
-    return this.http.get<ApiResponse<Game>>(`https://api.rawg.io/api/games?key=aac98732cf3445d48ccdf07a246b3a98`, { params: params });
+    return this.http.get<ApiResponse<Game>>(`https://api.rawg.io/api/games?key=${env.API_KEY}`, { params: params });
     
   }
 
 
   getGameDetailsFromHttp(id: string): Observable<Game> {
 
-    const gameInfoRequest = this.http.get(`https://api.rawg.io/api/games/${id}?key=aac98732cf3445d48ccdf07a246b3a98`);
+    const gameInfoRequest = this.http.get(`https://api.rawg.io/api/games/${id}?key=${env.API_KEY}`);
 
-    const gameTrailersRequest = this.http.get(`https://api.rawg.io/api/games/${id}/movies?key=aac98732cf3445d48ccdf07a246b3a98`);
+    const gameTrailersRequest = this.http.get(`https://api.rawg.io/api/games/${id}/movies?key=${env.API_KEY}`);
 
     return forkJoin({
       gameInfoRequest, gameTrailersRequest
